@@ -6,7 +6,7 @@
 /*   By: aleveil <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/29 15:01:26 by aleveil           #+#    #+#             */
-/*   Updated: 2022/12/05 14:15:13 by aleveil          ###   ########.fr       */
+/*   Updated: 2022/12/05 15:27:01 by aleveil          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,7 @@ int	exec_cmd(char *input_cmd, char **envp)
 	{
 		return (-1);
 	}
+	return (0);
 }
 
 void	child1_process(char **argv, int *pipe_fd, char **envp)
@@ -104,12 +105,13 @@ int	main(int argc, char **argv, char **envp)
 			error();
 		if (pid_child1 == 0)
 			child1_process(argv, pipe_fd, envp);
-		wait(NULL);
 		pid_child2 = fork();
 		if (pid_child2 == -1)
 			error();
 		if (pid_child2 == 0)
 			child2_process(argv, pipe_fd, envp);
+		waitpid(pid_child1, NULL, 0);
+		waitpid(pid_child2, NULL, 0);
 	}
 	else
 	{
@@ -117,4 +119,3 @@ int	main(int argc, char **argv, char **envp)
 	}
 	return (0);
 }
- 
