@@ -6,7 +6,7 @@
 /*   By: aleveil <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/29 15:01:26 by aleveil           #+#    #+#             */
-/*   Updated: 2022/11/29 18:25:49 by aleveil          ###   ########.fr       */
+/*   Updated: 2022/12/05 14:15:13 by aleveil          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,54 +37,84 @@ char	*get_cmd_path(char *cmd, char **envp)
 	return (0);
 }
 
-void	exec_cmd(char *input_cmd, char **envp)
+int	exec_cmd(char *input_cmd, char **envp)
 {
 	char	**cmd;
 	char	*path;
 
 	cmd = ft_split(input_cmd, ' ');
 	path = get_cmd_path(cmd[0], envp);
-	execve(path, cmd, envp);
+	if (!path)
+	{
+		free(cmd);
+		error();
+	}
+	if (execve(path, cmd, envp) == -1)
+	{
+		return (-1);
+	}
 }
 
-void	child_process(char **argv, int *pipe_fd, char **envp)
+void	child1_process(char **argv, int *pipe_fd, char **envp)
 {
 	int	infile;
 
 	infile = open(argv[1], O_RDONLY, 0777);
-	dup2(infile, 0);
-	dup2(pipe_fd[1], 1);
+	if (infile == -1)
+		error();
+	dup2(infile, STDIN_FILENO);
+	dup2(pipe_fd[1], STDOUT_FILENO);
 	close(pipe_fd[0]);
-	exec_cmd(argv[2], envp);
+	if (exec_cmd(argv[2], envp) == -1)
+	{
+		close(infile);
+		error();
+	}
 }
 
-void	parent_process(char **argv, int *pipe_fd, char **envp)
+void	child2_process(char **argv, int *pipe_fd, char **envp)
 {
 	int	outfile;
 
-	wait(NULL);
 	outfile = open(argv[4], O_CREAT | O_RDWR | O_TRUNC, 0777);
-	dup2(pipe_fd[0], 0);
-	dup2(outfile, 1);
+	if (outfile == -1)
+		error();
+	dup2(pipe_fd[0], STDIN_FILENO);
+	dup2(outfile, STDOUT_FILENO);
 	close(pipe_fd[1]);
-	exec_cmd(argv[3], envp);
+	if (exec_cmd(argv[3], envp) == -1)
+	{
+		close(outfile);
+		error();
+	}
 }
 
 int	main(int argc, char **argv, char **envp)
 {
 	int		pipe_fd[2];
-	pid_t	pid;
+	pid_t	pid_child1;
+	pid_t	pid_child2;
 
 	if (argc == 5)
 	{
 		if (pipe(pipe_fd) == -1)
-			error("Error");
-		pid = fork();
-		if (pid == -1)
-			error("Error");
-		if (pid == 0)
-			child_process(argv, pipe_fd, envp);
-		else
-			parent_process(argv, pipe_fd, envp);
+			error();
+		pid_child1 = fork();
+		if (pid_child1 == -1)
+			error();
+		if (pid_child1 == 0)
+			child1_process(argv, pipe_fd, envp);
+		wait(NULL);
+		pid_child2 = fork();
+		if (pid_child2 == -1)
+			error();
+		if (pid_child2 == 0)
+			child2_process(argv, pipe_fd, envp);
 	}
+	else
+	{
+		ft_putstr_fd("Error", 2);
+	}
+	return (0);
 }
+ 

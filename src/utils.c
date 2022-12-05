@@ -6,16 +6,16 @@
 /*   By: aleveil <marvin@42.fr>                     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/29 15:18:51 by aleveil           #+#    #+#             */
-/*   Updated: 2022/11/29 18:26:28 by aleveil          ###   ########.fr       */
+/*   Updated: 2022/12/02 10:23:26 by aleveil          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/pipex.h"
 
-void	error(char *str)
+void	error(void)
 {
-	ft_putendl_fd(str, 2);
-	exit(0);
+	perror("Error");
+	exit(EXIT_FAILURE);
 }
 
 void	free_all(char **str)
