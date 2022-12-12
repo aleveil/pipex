@@ -6,7 +6,7 @@
 /*   By: aleveil <aleveil@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/29 15:01:26 by aleveil           #+#    #+#             */
-/*   Updated: 2022/12/09 16:14:15 by aleveil          ###   ########.fr       */
+/*   Updated: 2022/12/12 14:51:35 by aleveil          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ char	*get_cmd_path(char *cmd, char **envp)
 		path_slash = ft_strjoin(all_paths[i], "/");
 		path = ft_strjoin(path_slash, cmd);
 		free(path_slash);
-		if (!access(path, F_OK))
+		if (access(path, F_OK) == 0)
 			return (path);
 		free(path);
 	}
@@ -43,12 +43,17 @@ int	exec_cmd(char *input_cmd, char **envp)
 	char	*path;
 
 	cmd = ft_split(input_cmd, ' ');
-	path = get_cmd_path(cmd[0], envp);
-	if (!path)
+	if (access(cmd[0], F_OK) == -1)
 	{
-		free(cmd);
-		error();
+		path = get_cmd_path(cmd[0], envp);
+		if (!path)
+		{
+			free(cmd);
+			error();
+		}
 	}
+	else
+		path = cmd[0];
 	if (execve(path, cmd, envp) == -1)
 	{
 		return (-1);
