@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipex.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aleveil <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: aleveil <aleveil@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/29 15:19:06 by aleveil           #+#    #+#             */
-/*   Updated: 2022/12/02 11:17:51 by aleveil          ###   ########.fr       */
+/*   Updated: 2022/12/09 16:14:14 by aleveil          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,14 @@
 # include <fcntl.h>
 # include "../libft/libft.h"
 
+int		main(int argc, char **argv, char **envp);
+char	*get_cmd_path(char *cmd, char **envp);
+int		exec_cmd(char *input_cmd, char **envp);
+void	child1_process(char **argv, int *pipe_fd, char **envp);
+void	child2_process(char **argv, int *pipe_fd, char **envp);
+
 void	free_all(char **str);
 void	error(void);
+void	close_pipe(int *pipe_fd);
 
 #endif

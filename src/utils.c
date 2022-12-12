@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aleveil <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: aleveil <aleveil@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/29 15:18:51 by aleveil           #+#    #+#             */
-/*   Updated: 2022/12/02 10:23:26 by aleveil          ###   ########.fr       */
+/*   Updated: 2022/12/09 16:11:55 by aleveil          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,12 @@ void	error(void)
 {
 	perror("Error");
 	exit(EXIT_FAILURE);
+}
+
+void	close_pipe(int	*pipe_fd)
+{
+	close(pipe_fd[0]);
+	close(pipe_fd[1]);
 }
 
 void	free_all(char **str)

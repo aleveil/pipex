@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipex.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aleveil <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: aleveil <aleveil@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/29 15:01:26 by aleveil           #+#    #+#             */
-/*   Updated: 2022/12/05 15:27:01 by aleveil          ###   ########.fr       */
+/*   Updated: 2022/12/09 16:14:15 by aleveil          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,12 +110,11 @@ int	main(int argc, char **argv, char **envp)
 			error();
 		if (pid_child2 == 0)
 			child2_process(argv, pipe_fd, envp);
+		close_pipe(pipe_fd);
 		waitpid(pid_child1, NULL, 0);
 		waitpid(pid_child2, NULL, 0);
 	}
 	else
-	{
 		ft_putstr_fd("Error", 2);
-	}
 	return (0);
 }
