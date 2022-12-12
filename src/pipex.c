@@ -6,7 +6,7 @@
 /*   By: aleveil <aleveil@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/29 15:01:26 by aleveil           #+#    #+#             */
-/*   Updated: 2022/12/12 14:51:35 by aleveil          ###   ########.fr       */
+/*   Updated: 2022/12/12 15:42:47 by aleveil          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ void	child2_process(char **argv, int *pipe_fd, char **envp)
 {
 	int	outfile;
 
-	outfile = open(argv[4], O_CREAT | O_RDWR | O_TRUNC, 0777);
+	outfile = open(argv[4], O_CREAT | O_WRONLY | O_TRUNC, 0777);
 	if (outfile == -1)
 		error();
 	dup2(pipe_fd[0], STDIN_FILENO);
