@@ -6,7 +6,7 @@
 /*   By: aleveil <aleveil@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/29 15:01:26 by aleveil           #+#    #+#             */
-/*   Updated: 2022/12/12 15:42:47 by aleveil          ###   ########.fr       */
+/*   Updated: 2022/12/15 12:44:57 by aleveil          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,10 @@ int	exec_cmd(char *input_cmd, char **envp)
 	cmd = ft_split(input_cmd, ' ');
 	if (access(cmd[0], F_OK) == -1)
 	{
-		path = get_cmd_path(cmd[0], envp);
+		if (!envp[0])
+			path = NULL;
+		else
+			path = get_cmd_path(cmd[0], envp);
 		if (!path)
 		{
 			free(cmd);
@@ -110,16 +113,16 @@ int	main(int argc, char **argv, char **envp)
 			error();
 		if (pid_child1 == 0)
 			child1_process(argv, pipe_fd, envp);
+		waitpid(pid_child1, NULL, 0);
 		pid_child2 = fork();
 		if (pid_child2 == -1)
 			error();
 		if (pid_child2 == 0)
 			child2_process(argv, pipe_fd, envp);
 		close_pipe(pipe_fd);
-		waitpid(pid_child1, NULL, 0);
 		waitpid(pid_child2, NULL, 0);
 	}
 	else
-		ft_putstr_fd("Error", 2);
+		ft_putstr_fd("Error\n", 2);
 	return (0);
 }
